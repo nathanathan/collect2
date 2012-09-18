@@ -1,0 +1,45 @@
+<form>
+    <fieldset data-role="controlgroup"
+        {{#eachProperty htmlAttributes}}
+            {{property}}="{{value}}"
+        {{/eachProperty}}
+        >
+        <legend>{{> labelHint}}</legend>
+        {{#each choices}}
+            <input
+                {{#if ../select_one}}
+                    type="radio"
+                {{else}}
+                    type="checkbox"
+                {{/if}}
+                {{#if checked}}
+                    checked="checked"
+                {{/if}}
+                {{! the name attribue has to be the same for all the options}}
+                name="{{../name}}"
+                id="{{name}}"
+                value="{{name}}" />
+            <label for="{{name}}">{{localize label}}</label>
+        {{/each}}
+        {{#if or_other}}
+                <input
+                    {{#if selectOne}}
+                        type="radio"
+                    {{else}}
+                        type="checkbox"
+                    {{/if}}
+                    {{#if checked}}
+                        checked
+                    {{/if}}
+                    name="{{name}}"
+                    value="{{otherValue}}" />
+                <input
+                    name="{{name}}OtherValue"
+                    value="{{otherValue}}" 
+                    {{#unless other.selected}}
+                        disabled="true"
+                    {{/unless}} />
+
+        {{/if}}
+    </fieldset>
+</form>

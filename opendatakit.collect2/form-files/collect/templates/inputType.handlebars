@@ -1,0 +1,20 @@
+<div class="{{#if hide}}odk-hidden{{/if}}">
+    {{> labelHint}}
+    <div class="input-container">{{! used to prevent swiping on sliders}}
+    <input
+        class="odk"
+        name="{{name}}"
+        value="{{value}}"
+        {{#eachProperty htmlAttributes}}
+            {{property}}="{{value}}"
+        {{/eachProperty}}
+        {{#if disabled}}
+            style="background-color:lightgray;"
+            disabled="true"
+        {{/if}}
+        />
+        {{#if invalid}}
+            <p>invalid</p>
+        {{/if}}
+    </div>
+</div>

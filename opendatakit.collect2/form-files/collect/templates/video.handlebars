@@ -1,0 +1,17 @@
+<div>
+    {{> labelHint}}
+    <input type="text" name="{{name}}" value="{{mediaPath}}"
+        style="background-color:lightgray;"
+        disabled="true"
+        />
+    {{#if invalid}}
+        <p>invalid</p>
+    {{/if}}
+    <button>Take Video</button>
+    <div class="mediaContainer">
+        {{#if uriValue}}
+            <video src="{{uriValue}}" controls="controls">
+            </video>
+        {{/if}}
+    </div>
+<div>

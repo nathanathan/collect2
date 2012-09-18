@@ -1,0 +1,16 @@
+<div>
+    {{> labelHint}}
+    <input type="text" name="{{name}}" value="{{mediaPath}}"
+            style="background-color:lightgray;"
+            disabled="true"
+        />
+    {{#if invalid}}
+        <p>invalid</p>
+    {{/if}}
+    <button>Capture Audio</button>
+    <div class="mediaContainer">
+        {{#if uriValue}}
+            <audio src="{{uriValue}}"></audio>
+        {{/if}}
+    </div>
+<div>

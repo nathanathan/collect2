@@ -1,0 +1,30 @@
+<div class="odk-screen 
+    {{#if enableNavigation}}
+        {{#if enableForwardNavigation}}swipeForwardEnabled{{/if}}
+        {{#if enableBackNavigation}}swipeBackEnabled{{/if}}
+    {{/if}}">
+    {{#if showHeader}}
+        <div data-role="header" class="odk-toolbar">{{name}}</div>
+    {{/if}}
+    <div data-role="content" class="odk-scroll odk-container">
+    {{#if loading}}
+        <div>Please wait...</div>
+    {{/if}}
+    </div>
+    {{#if showFooter}}
+    <div data-role="footer" class="odk-nav ui-state-persist" data-theme="d">
+        {{#if enableNavigation}}
+            <div data-role="navbar" class="ui-state-persist">
+                <ul>
+                {{#if enableBackNavigation}}
+                    <li><a class="odk-prev-btn" data-iconpos="top" data-icon="arrow-l">back</a></li>
+                {{/if}}
+                {{#if enableForwardNavigation}}
+                    <li><a class="odk-next-btn" data-iconpos="top" data-icon="arrow-r">next</a></li>
+                {{/if}}
+                </ul>
+            </div>
+        {{/if}}
+    </div>
+    {{/if}}
+</div>

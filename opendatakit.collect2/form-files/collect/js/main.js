@@ -1,24 +1,31 @@
 requirejs.config({
-    //baseUrl: '../collect/js',
+    baseUrl: '../collect',
     paths: {
-        collect : '',
-        mdl : 'mdl',
-        database : 'database',
-        opendatakit : 'opendatakit',
-        parsequery : 'parsequery',
-        jquery : 'jquery',
-        jqmobile : '../libs/jquery.mobile-1.1.1/jquery.mobile-1.1.1',
-        underscore : 'underscore',
-        backbone : 'backbone',
-        prompts : 'prompts',
-        controller : 'controller',
-        builder : 'builder',
-        handlebars : 'handlebars',
-        promptTypes : 'promptTypes',
-        text : 'text',
-        screenManager : 'screenManager',
-        templates : '../templates'
-        },
+        // third-party libraries we depend upon 
+        jqmobile : 'libs/jquery.mobile-1.1.1/jquery.mobile-1.1.1',
+        //jqmobile : 'libs/jquery.mobile-1.2.0-rc.2/jquery.mobile-1.2.0-rc.2',
+        jquery : 'libs/jquery.1.8.1',
+        backbone : 'libs/backbone.0.9.2',
+        handlebars : 'libs/handlebars.1.0.0.beta.6',
+        underscore : 'libs/underscore.1.3.3',
+        text : 'libs/text.2.0.3',
+        mobiscroll : 'libs/mobiscroll/js/mobiscroll-2.0.3.custom.min',
+        // directory paths for resources
+        img : 'img',
+        templates : 'templates',
+        // top-level objects
+        mdl : 'js/mdl',
+        promptTypes : 'js/promptTypes',
+        // collect.js -- stub directly loaded
+        // functionality
+        prompts : 'js/prompts',
+        database : 'js/database',
+        controller : 'js/controller',
+        builder : 'js/builder',
+        screenManager : 'js/screenManager',
+        parsequery : 'js/parsequery',
+        opendatakit : 'js/opendatakit',
+    },
     shim: {
         'jquery': {
             // Slimmer drop-in replacement for jquery
@@ -59,8 +66,8 @@ requirejs.config({
             //module value.
             exports: 'Handlebars'
         },
-        'templates/compiledTemplates': {
-            deps: ['handlebars']
+        'mobiscroll': {
+            deps: ['jquery']
         }
     }
 });
@@ -68,95 +75,37 @@ requirejs.config({
 requirejs(['jquery'], function($) {
 
 $(document).bind("mobileinit", function () {
-	$.mobile.ajaxEnabled = false;
-	$.mobile.linkBindingEnabled = false;
-	$.mobile.hashListeningEnabled = false;
-	$.mobile.pushStateEnabled = false;
+    $.mobile.ajaxEnabled = false;
+    $.mobile.linkBindingEnabled = false;
+    $.mobile.hashListeningEnabled = false;
+    $.mobile.pushStateEnabled = false;
 });
 
 requirejs(['mdl','opendatakit', 'database','parsequery',
                         'jqmobile', 'builder', 'controller',
                         'prompts'/* mix-in additional prompts and support libs here */], 
         function(mdl,opendatakit,database,parsequery,m,builder,controller,prompts) {
-			
-			window.updateScreen = function(formDef, formPath, instanceId, pageRef, sameForm, sameInstance) {
-					// we have saved all query parameters into the metaData table
-					// created the data table and its table descriptors
-					// re-normalized the query string to just have the instanceId
-					// read all the form data and metaData into value caches
-					// under mdl.data and mdl.qp (respectively).
-					console.log('scripts loaded');
-					if ( formPath == null ) {
-						alert("Unexpected null formPath");
-						return;
-					}
-					
-					var qpl = opendatakit.getHashString(formPath, instanceId, pageRef);
-					
-					// pull metadata for synchronous read access
-					database.cacheAllMetaData(function() {
-							// metadata is OK...
-							database.initializeTables(formDef, function() {
-									// instance data is OK...
-									if ( !sameForm ) {
-											controller.screenManager = null;
-											
-											// build the survey and place it in the controller...
-											builder.buildSurvey(formDef, function() {
-													// controller OK
-													// new form -- no 'back' history
-													controller.clearPromptHistory();
-													//
-													// register to handle manual #hash changes
-													$(window).bind('hashchange', function(evt) {
-															controller.odkHashChangeHandler(evt);
-													});
+            parsequery.initialize(controller,builder);
 
-													if ( qpl != window.location.hash ) {
-															// apply the change to the URL...
-															window.location.hash = qpl;
-															// triggers hash-change listener...
-													} else {
-															// fire the controller to render the first page.
-															controller.gotoRef(pageRef);
-													}
-											});
-									} else {
-											// controller prompts OK
-											if ( !sameInstance ) {
-													controller.screenManager = null;
-													// switching instance -- no 'back' history...
-													controller.clearPromptHistory();
-											}
-											//
-											// register to handle manual #hash changes
-											$(window).bind('hashchange', function(evt) {
-													controller.odkHashChangeHandler(evt);
-											});
-
-											if ( qpl != window.location.hash ) {
-													// apply the change to the URL...
-													window.location.hash = qpl;
-													// triggers hash-change listener...
-											} else {
-													// fire the controller to render the first page.
-													controller.gotoRef(pageRef);
-											}
-									}
-							}
-							);
-					});
-			};
-
-		var f = function() {
-			if ( $.mobile != null && !$.mobile.hashListeningEnabled ) {
-				parsequery.parseQueryParameters( window.updateScreen );
-			} else {
-				setTimeout(f, 200);
-			}
-		};
-		
-		f();
-		
-	});
+            //
+            // register to handle manual #hash changes
+            $(window).bind('hashchange', function(evt) {
+                    parsequery.hashChangeHandler(evt);
+            });
+            
+            //
+            // define a function that waits until jquery mobile is initialized
+            // then calls parseParameters() to trigger loading and processing of
+            // the requested form.
+            var f = function() {
+                if ( $.mobile != null && !$.mobile.hashListeningEnabled ) {
+                    parsequery.parseParameters();
+                } else {
+                    setTimeout(f, 200);
+                }
+            };
+        
+            f();
+        
+        });
 });

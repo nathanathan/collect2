@@ -114,6 +114,15 @@
             }
         }, 
         {
+            "image": "img/dolphin.png", 
+            "audio": "audio/carrioncrow.mp3", 
+            "type": "note", 
+            "param": null, 
+            "label": {
+                "en_us": "Media in label test:"
+            }
+        }, 
+        {
             "type": "label", 
             "param": "end"
         }, 
@@ -194,8 +203,8 @@
                 "label": "South America"
             }, 
             {
-                "name": "Euroupe", 
-                "label": "Euroupe"
+                "name": "Europe", 
+                "label": "Europe"
             }, 
             {
                 "name": "Africa", 

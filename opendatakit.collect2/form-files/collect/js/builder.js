@@ -3,7 +3,8 @@
 define(['controller', 'opendatakit', 'database', 'jquery', 'promptTypes'], function(controller, opendatakit, database, $, promptTypes) {
     var evalInEnvironment = (function() {
         //This closure will define a bunch of functions in our DSL for constraints/calculates/etc. 
-        //It's still possible to really mess things up from there though.
+        //It's still possible to really mess things up from here though because the
+        //top-level environment is still accessable.
         function selected(promptValue, qValue){
             //TODO: Store parsed JSON?
             if(promptValue) {
@@ -20,11 +21,13 @@ define(['controller', 'opendatakit', 'database', 'jquery', 'promptTypes'], funct
     return {
     column_types: {
         condition: 'formula',
-		validate: 'formula',
-		templatePath: 'app_path',
-		image: 'app_path_localized',
-		audio: 'app_path_localized',
-		video: 'app_path_localized'
+        required: 'formula',
+        validate: 'formula',
+        calculate: 'formula',
+        templatePath: 'requirejs_path',
+        image: 'app_path_localized',
+        audio: 'app_path_localized',
+        video: 'app_path_localized'
     },
     propertyParsers: {
         formula: function(content) {
@@ -39,39 +42,36 @@ define(['controller', 'opendatakit', 'database', 'jquery', 'promptTypes'], funct
                     return "this.database.getDataValue('" + variableName + "')";
                 }
             content = content.replace(variableRegex, replaceCallback);
-            //var result = 'if(' + content + '){that.baseValidate(context);} else {context.failure()}';
-            //result = 'console.log("test");' + result;
-            //How best to refrence current value?
             var result = '(function(context){return ' + content + '})';
             console.log(result);
             return evalInEnvironment(result);
         },
-		app_path : function(content) {
-			return opendatakit.getCurrentFormDirectory() + content;
-		},
-		app_path_localized : function(content) {
-			var fd = opendatakit.getCurrentFormDirectory();
-			if ( content == null ) {
-				return content;
-			} else if ( $.isPlainObject(content) ) {
-				var newcontent = {};
-				for ( var key in content ) {
-					var val = content[key];
-					if ( val.indexOf('/') == 0 || val.indexOf('http:') == 0 || val.indexOf('https:') == 0 ) {
-						newcontent[key] = val;
-					} else {
-						newcontent[key] = fd + val;
-					}
-				}
-				return newcontent;
-			} else {
-				if ( content.indexOf('/') == 0 || content.indexOf('http:') == 0 || content.indexOf('https:') == 0 ) {
-					return content;
-				} else {
-					return fd + content;
-				}
-			}
-		}
+        requirejs_path : function(content) {
+            return opendatakit.getCurrentFormDirectory() + content;
+        },
+        app_path_localized : function(content) {
+            var fd = opendatakit.getCurrentFormDirectory();
+            if ( content == null ) {
+                return content;
+            } else if ( $.isPlainObject(content) ) {
+                var newcontent = {};
+                for ( var key in content ) {
+                    var val = content[key];
+                    if ( val.indexOf('/') == 0 || val.indexOf('http:') == 0 || val.indexOf('https:') == 0 ) {
+                        newcontent[key] = val;
+                    } else {
+                        newcontent[key] = fd + val;
+                    }
+                }
+                return newcontent;
+            } else {
+                if ( content.indexOf('/') == 0 || content.indexOf('http:') == 0 || content.indexOf('https:') == 0 ) {
+                    return content;
+                } else {
+                    return fd + content;
+                }
+            }
+        }
     },
     /**
      * 
@@ -161,14 +161,14 @@ define(['controller', 'opendatakit', 'database', 'jquery', 'promptTypes'], funct
         return initializedPrompts;
     },
     buildSurvey:function(surveyJson, continuation){
-			// if we have no survey object, we are bootstrapping
-			// just run the continuation (which will register a
-			// hash change processor).
-			if (surveyJson == null) {
-				continuation();
-				return;
-			}
-			
+            // if we have no survey object, we are bootstrapping
+            // just run the continuation (which will register a
+            // hash change processor).
+            if (surveyJson == null) {
+                continuation();
+                return;
+            }
+            
             var that = this;
 
             var widgets = {};
@@ -187,6 +187,16 @@ define(['controller', 'opendatakit', 'database', 'jquery', 'promptTypes'], funct
                 settings: surveyJson.settings,
                 widgets: widgets
             };
+            var calcs = [];
+            var navs = [];
+            for ( var i = 0 ; i < surveyJson.survey.length ; ++i ) {
+                var e = surveyJson.survey[i];
+                if ( e.type == "calculate" ) {
+                    calcs[calcs.length] = e;
+                } else {
+                    navs[navs.length] = e;
+                }
+            }
             var prompts = ([{
                 "type": "goto_if",
                 "condition": function() {
@@ -211,7 +221,7 @@ define(['controller', 'opendatakit', 'database', 'jquery', 'promptTypes'], funct
                 type: "opening",
                 name: "_opening",
                 label: "opening page"
-            }]).concat(surveyJson.survey).concat([{
+            }]).concat(navs).concat([{
                 type: "finalize",
                 name: "_finalize",
                 label: "Save Form"
@@ -222,8 +232,10 @@ define(['controller', 'opendatakit', 'database', 'jquery', 'promptTypes'], funct
             }]);
 
             console.log('initializing');
-            that.form.prompts = this.initializePrompts(prompts );
+            that.form.prompts = this.initializePrompts(prompts);
+            that.form.calcs = this.initializePrompts(calcs);
             controller.prompts = that.form.prompts;
+            controller.calcs = that.form.calcs;
             console.log('starting');
             continuation();
         }

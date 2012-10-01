@@ -149,9 +149,8 @@ getAllFormInstancesStmt:function() {
             stmt : 'select group_concat(case when name=\'instanceName\' then val else null end) instanceName, ' +
                           'group_concat(case when name=\'version\' then val else null end) version, ' + 
                           'max(timestamp) last_saved_timestamp, max(saved) saved_status, instance_id from ' + 
-                      '(select form_id, instance_id, timestamp, saved, name, v1 val from ' + 
-                            '(select form_id, instance_id, timestamp, saved, name, val v1 from instance_info ' + 
-                                'where form_id=? group by instance_id, name having timestamp = max(timestamp))) ' + 
+                      '(select form_id, instance_id, timestamp, saved, name, val from instance_info ' + 
+                                'where form_id=? group by instance_id, name having timestamp = max(timestamp)) ' + 
                      'group by instance_id order by timestamp desc;',
             bind : [mdl.qp.formId.value]
             };
@@ -204,7 +203,7 @@ getData:function(name, action) {
         action(dbValue,dbType);
       });
 },
-putData:function(name, type, value, onSuccessfulSave) {
+putData:function(name, type, value, onSuccessfulSave, onFailure) {
       var that = this;
       that.withDb( function(transaction) {
             var is = that.insertStmt(name, type, value);
@@ -213,6 +212,9 @@ putData:function(name, type, value, onSuccessfulSave) {
             });
         }, function(error) {
         console.log("putData: failed to put " + name + " type: " + type + " value: " + value);
+        if ( onFailure != null ) {
+            onFailure();
+        }
       }, onSuccessfulSave );
 },
 putDataKeyTypeValueMapHelper:function(idx, that, ktvlist) {
@@ -322,7 +324,7 @@ getMetaData:function(name, action) {
         action(dbValue,dbType);
       });
 },
-putMetaData:function(name, type, value, onSuccessfulSave) {
+putMetaData:function(name, type, value, onSuccessfulSave, onFailure) {
       var that = this;
       that.withDb( function(transaction) {
             var is = that.insertMetaDataStmt(name, type, value);
@@ -331,7 +333,10 @@ putMetaData:function(name, type, value, onSuccessfulSave) {
             });
         }, function(error) {
         console.log("putMetaData: failed to put " + name + " type: " + type + " value: " + value);
-      }, onSuccessfulSave );
+        if ( onFailure != null ) {
+            onFailure();
+        }
+      }, onSuccessfulSave);
 },
 putMetaDataKeyTypeValueMapHelper:function(idx, that, ktvlist) {
     return function(transaction) {
@@ -376,7 +381,7 @@ cacheAllMetaData:function(action) {
             tlo = {};
         }
         // these values come from the current webpage
-		tlo.formPath = mdl.qp.formPath;
+        tlo.formPath = mdl.qp.formPath;
         tlo.formId = mdl.qp.formId;
         tlo.formVersion = mdl.qp.formVersion;
         tlo.formLocale = mdl.qp.formLocale;
@@ -399,7 +404,7 @@ getCrossTableMetaData:function(formId, instanceId, name, action) {
             } else {
                 if(result.rows.length != 1) {
                     throw new Error("getCrossTableMetaData: multiple rows! " +
-						formId + ", " + instanceId + ", " + name + " count: " + result.rows.length);
+                        formId + ", " + instanceId + ", " + name + " count: " + result.rows.length);
                 }
                 var row = result.rows.item(0);
                 dbValue = row['val'];
@@ -421,7 +426,7 @@ putCrossTableMetaData:function(formId, instanceId, name, type, value, onSuccessf
             });
         }, function(error) {
         console.log("putCrossTableMetaData: failed to put " +
-			formId + ", " + instanceId + ", " + name + " type: " + type + " value: " + value);
+            formId + ", " + instanceId + ", " + name + " type: " + type + " value: " + value);
       }, onSuccessfulSave );
 },
 putCrossTableMetaDataKeyTypeValueMapHelper:function(formId, instanceId, idx, that, ktvlist) {
@@ -555,26 +560,26 @@ getDataValue:function(name) {
     }
     return v.value;
 },
-setData:function(name, datatype, value, onSuccess) {
+setData:function(name, datatype, value, onSuccess, onFailure) {
     var that = this;
     that.putData(name, datatype, value, function() {
 /*
-	    var path = name.split('.');
-		var v = mdl.data;
-		for ( var i = 0 ; i < path.length ; ++i ) {
-			var newv = v[path[i]];
-			if ( newv == null ) {
-				v[path[i]] = {};
-				newv = v[path[i]];
-			}
-			v = newv;
-		}
-		v.type = datatype;
-		v.value = value;
+        var path = name.split('.');
+        var v = mdl.data;
+        for ( var i = 0 ; i < path.length ; ++i ) {
+            var newv = v[path[i]];
+            if ( newv == null ) {
+                v[path[i]] = {};
+                newv = v[path[i]];
+            }
+            v = newv;
+        }
+        v.type = datatype;
+        v.value = value;
         onSuccess();
 */
-		that.cacheAllData(onSuccess);
-    });
+        that.cacheAllData(onSuccess);
+    }, onFailure);
 },
 getMetaDataValue:function(name) {
     var path = name.split('.');
@@ -585,26 +590,26 @@ getMetaDataValue:function(name) {
     }
     return v.value;
 },
-setMetaData:function(name, datatype, value, onSuccess) {
+setMetaData:function(name, datatype, value, onSuccess, onFailure) {
     var that = this;
     that.putMetaData(name, datatype, value, function() {
 /*
-	    var path = name.split('.');
-		var v = mdl.qp;
-		for ( var i = 0 ; i < path.length ; ++i ) {
-			var newv = v[path[i]];
-			if ( newv == null ) {
-				v[path[i]] = {};
-				newv = v[path[i]];
-			}
-			v = newv;
-		}
-		v.type = datatype;
-		v.value = value;
+        var path = name.split('.');
+        var v = mdl.qp;
+        for ( var i = 0 ; i < path.length ; ++i ) {
+            var newv = v[path[i]];
+            if ( newv == null ) {
+                v[path[i]] = {};
+                newv = v[path[i]];
+            }
+            v = newv;
+        }
+        v.type = datatype;
+        v.value = value;
         onSuccess();
 */
         that.cacheAllMetaData(onSuccess);
-    });
+    }, onFailure);
 }
 };
 });

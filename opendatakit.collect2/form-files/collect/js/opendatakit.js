@@ -2,7 +2,7 @@
 // depends upon: --
 define(['mdl'],function(mdl) {
 return {
-    baseDir: '../collect/',
+    baseDir: '',
     databaseSettings: null,
     platformInfo: null,
     
@@ -16,6 +16,9 @@ return {
             var jsonString = collect.getPlatformInfo();
             console.log('getPlatformInfo: ' + jsonString);
             this.platformInfo = JSON.parse(jsonString);
+            console.log('getPlatformInfo: container=' + this.platformInfo.container);
+            console.log('getPlatformInfo: version=' + this.platformInfo.version);
+            console.log('getPlatformInfo: appPath=' + this.platformInfo.appPath);
         }
         return this.platformInfo;
     },
@@ -31,6 +34,8 @@ return {
     },
 
     asUri:function(mediaPath,widget,attribute) {
+        if ( mediaPath == null ) return null;
+        
         var info = this.getPlatformInfo();
         if ( info.container != 'Android' ) return mediaPath;
         
@@ -91,39 +96,71 @@ return {
         });
         return id;
     },
-	
-	getHashString:function(formPath, instanceId, pageRef) {
-		if ( formPath == null ) return '#formPath=' + escape('../../collect');
+    
+    getHashString:function(formPath, instanceId, pageRef) {
+        if ( formPath == null ) return '#formPath=' + escape('collect/');
         var qpl =
-		    '#formPath=' + escape(formPath) +
-			((instanceId == null) ? '' : ('&instanceId=' + escape(instanceId))) +
-			'&pageRef=' + escape((pageRef == null) ? '0' : pageRef);
-		return qpl;
-	},
+            '#formPath=' + escape(formPath) +
+            ((instanceId == null) ? '' : ('&instanceId=' + escape(instanceId))) +
+            '&pageRef=' + escape((pageRef == null) ? '0' : pageRef);
+        return qpl;
+    },
 
-	getCurrentFormDirectory:function(formPath) {
-		if ( formPath == null ) {
-			formPath = mdl.qp.formPath.value;
-		}
-		return formPath;
-	},
-	
+    getCurrentFormDirectory:function(formPath) {
+        if ( formPath == null ) {
+            formPath = mdl.qp.formPath.value;
+        }
+        return formPath;
+    },
+    
     openNewInstanceId:function(id, friendlyName) {
         console.log("ALERT! setNewInstanceId - setting new UUID");
         if (id == null) {
-			mdl.qp.instanceId.type = "string";
-            mdl.qp.instanceId.value = this.genUUID();
-        } else {
-			mdl.qp.instanceId.type = "string";
-            mdl.qp.instanceId.value = id;
+            id = this.genUUID();
         }
-		// NOTE: reference mdl directly to avoid circular reference to 'database'
+        
+        // NOTE: reference mdl directly to avoid circular reference to 'database'
         var qpl = this.getHashString(mdl.qp.formPath.value,
-						mdl.qp.instanceId.value,
-						0) +
+                        id,
+                        0) +
             ((friendlyName != null) ? '&instanceName=' + escape(friendlyName) : '');
         // apply the change to the URL...
         window.location.hash = qpl;
     },
+
+    localize:function(textOrLangMap, locale) {
+        if(_.isUndefined(textOrLangMap)) {
+            return 'undefined';
+        }
+        if(_.isString(textOrLangMap)) {
+            return textOrLangMap;
+        }
+        if( locale in textOrLangMap ){
+            return textOrLangMap[locale];
+        } else if( 'default' in textOrLangMap ){
+            return textOrLangMap['default'];
+        } else {
+            alert("Could not localize object. See console:");
+            console.error("Non localizable object:");
+            console.error(textOrLangMap);
+            return 'invalidOjbect';
+        }
+    },
+    
+    /**
+     * Retrieve the value of a setting from the form definition file.
+     * 
+     * Immediate.
+      */
+    getSetting:function(formDef, key) {
+        for (var i = 0 ; i < formDef.settings.length ; ++i ) {
+            var e = formDef.settings[i];
+            if ( e.setting == key ) {
+                return e.value;
+            }
+        }
+        return null;
+    }
+
 };
 });

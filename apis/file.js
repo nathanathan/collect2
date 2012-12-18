@@ -60,8 +60,8 @@ function getDirList() {
         console.log(fileSystem.root.name);
         $('#file-system-text').html("File System: <strong>" + fileSystem.name + "</strong> " +
                 "Root: <strong>" + fileSystem.root.name + "</strong>");
-        
-        fileSystem.root.getDirectory("odk/js/forms", {create: true, exclusive: false}, function(dirEntry){
+        var dirPath = "odk/js/forms/";
+        fileSystem.root.getDirectory(dirPath, {create: true, exclusive: false}, function(dirEntry){
             var directoryReader = dirEntry.createReader();
             // Get a list of all the entries in the directory
             directoryReader.readEntries(function(entries){
@@ -69,7 +69,7 @@ function getDirList() {
                 var $entries = $('#entries');
                 for (i=0; i<entries.length; i++) {
                     console.log(entries[i].name);
-                    $entries.append('<p>' + entries[i].name + '</p>');
+                    $entries.append('<a href="' + dirPath + entries[i].name + '">' + entries[i].name + '</a>');
                 }
             }, function(error){
                 alert("Failed to list directory contents: " + error.code);

@@ -29,7 +29,7 @@ function writeFail(error) {
 }
 
 // api-file  Create
-function createGotNewFile(file){
+function createGotNewFile(file) {
     $('#file-status').html("Created: <strong>" + file.fullPath + "</strong>");
     $('#file-read-text').empty();  
     $('#file-read-dataurl').empty();
@@ -53,6 +53,7 @@ function createFile() { // button onclick function
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, failFS);
     }
 }
+// file://odk/js/forms/default/index.html
 function getDirList() {
     window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
         console.log(fileSystem.name);
@@ -60,7 +61,7 @@ function getDirList() {
         $('#file-system-text').html("File System: <strong>" + fileSystem.name + "</strong> " +
                 "Root: <strong>" + fileSystem.root.name + "</strong>");
         
-        fileSystem.root.getDirectory("newDir", {create: true, exclusive: false}, function(dirEntry){
+        fileSystem.root.getDirectory("odk/js/forms", {create: true, exclusive: false}, function(dirEntry){
             var directoryReader = dirEntry.createReader();
             // Get a list of all the entries in the directory
             directoryReader.readEntries(function(entries){

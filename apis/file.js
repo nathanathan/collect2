@@ -69,7 +69,12 @@ function getDirList() {
                 var $entries = $('#entries');
                 for (i=0; i<entries.length; i++) {
                     console.log(entries[i].name);
-                    $entries.append('<a href="' + dirPath + entries[i].name + '">' + entries[i].name + '</a>');
+                    if(entries[i].isDirectory()) {
+                        var $formLink = $('<li><a href="file:///sdcard/' +
+                            dirPath + entries[i].name + '/formDef.json">' +
+                            entries[i].name + '</a></li>');
+                        $entries.append($formLink);
+                    }
                 }
             }, function(error){
                 alert("Failed to list directory contents: " + error.code);

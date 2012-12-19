@@ -53,38 +53,6 @@ function createFile() { // button onclick function
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, failFS);
     }
 }
-// file://odk/js/forms/default/index.html
-function getDirList() {
-    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
-        console.log(fileSystem.name);
-        console.log(fileSystem.root.name);
-        $('#file-system-text').html("File System: <strong>" + fileSystem.name + "</strong> " +
-                "Root: <strong>" + fileSystem.root.name + "</strong>");
-        var dirPath = "odk/js/forms/";
-        fileSystem.root.getDirectory(dirPath, {create: true, exclusive: false}, function(dirEntry){
-            var directoryReader = dirEntry.createReader();
-            // Get a list of all the entries in the directory
-            directoryReader.readEntries(function(entries){
-                var i;
-                var $entries = $('#entries');
-                for (i=0; i<entries.length; i++) {
-                    console.log(entries[i].name);
-                    if(entries[i].isDirectory()) {
-                        var $formLink = $('<li><a href="file:///sdcard/' +
-                            dirPath + entries[i].name + '/formDef.json">' +
-                            entries[i].name + '</a></li>');
-                        $entries.append($formLink);
-                    }
-                }
-            }, function(error){
-                alert("Failed to list directory contents: " + error.code);
-            });
-        },
-        function(error){
-            alert("Unable to create new directory: " + error.code);
-        });
-    }, failFS);
-}
 
 //api-file  FileWriter
 function gotFileWriter(writer) {
@@ -176,4 +144,37 @@ function removeFile() { // button onclick function
     } else {
         $('#file-status').html("Status: <strong>Error: File Not Created!</strong>");
     }    
+}
+
+
+function getDirList() {
+    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
+        console.log(fileSystem.name);
+        console.log(fileSystem.root.name);
+        $('#file-system-text').html("File System: <strong>" + fileSystem.name + "</strong> " +
+                "Root: <strong>" + fileSystem.root.name + "</strong>");
+        var dirPath = "odk/js/forms/";
+        fileSystem.root.getDirectory(dirPath, {create: true, exclusive: false}, function(dirEntry){
+            var directoryReader = dirEntry.createReader();
+            // Get a list of all the entries in the directory
+            directoryReader.readEntries(function(entries){
+                var i;
+                var $entries = $('#entries');
+                for (i=0; i<entries.length; i++) {
+                    console.log(entries[i].name);
+                    if(entries[i].isDirectory) {
+                        var $formLink = $('<li><a href="file:///sdcard/' +
+                            dirPath + entries[i].name + '/formDef.json">' +
+                            entries[i].name + '</a></li>');
+                        $entries.append($formLink);
+                    }
+                }
+            }, function(error){
+                alert("Failed to list directory contents: " + error.code);
+            });
+        },
+        function(error){
+            alert("Unable to create new directory: " + error.code);
+        });
+    }, failFS);
 }

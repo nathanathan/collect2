@@ -1,58 +1,12 @@
-<!-- Copyright (c) 2012 Mobile Developer Solutions -->
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-type" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
-    <title>MDS PhoneGap API Demo with jQuery Mobile</title>
+<head>
+    <title>FLP App</title>
     <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
-    <link rel="stylesheet" href="libs/jquery.mobile/jquery.mobile-1.2.0.css" />
-    <link rel="stylesheet" href="index.css" /> 
-
-    <script src="libs/jquery.1.8.2.js"></script>
-	<script src="libs/jquery.mobile/jquery.mobile-1.2.0.min.js"></script>
-	<script type="text/javascript" charset="utf-8" src="index.js"></script>
-    <script src="apis/file.js"></script>
-  </head>
-  
-  <body>
-	<div data-role="page" id="page-home" class="type-interior" data-theme="b">
-
-    	<div data-role="header" data-theme="b">
-    		<h1>MDS PhoneGap API Demo</h1>
-     		<a href="#" data-icon="home" data-iconpos="notext" id="intro" class="ui-btn-right">intro</a>
-    	</div>
-    
-    	<div data-role="content" data-theme="c" class="content-primary">
-		    <div>
-				<h2>File</h2>
-				<blockquote>
-					<p>An API to read, write and navigate file system hierarchies.</p>
-				</blockquote>
-				<div id="file-system-text"></div>
-				<fieldset class="ui-grid-a">				
- 					<div class="ui-block-a">
- 						<div data-role="button" onclick="createFile();">Create</div>
- 					</div>
- 					<div class="ui-block-b">
- 						<div data-role="button" onclick="writeFile();">Write</div>
- 					</div>
-   					<span id="file-status">Status:</span>
-   					<span id="file-contents"></span>
-   				</fieldset>
-				<fieldset class="ui-grid-a">				
- 					<div class="ui-block-a">
-   						<div data-role="button" onclick="readFile();">Read</div>
-   					</div>
- 					<div class="ui-block-b">
- 						<div data-role="button" onclick="removeFile();">Remove</div>
- 					</div>
-   					Read text: <span id="file-read-text"></span><br/>
-   					Data Url: <span id="file-read-dataurl"></span>
-   				</fieldset>
-               <div data-role="button" onclick="getDirList();">List Dir</div>
-               <div id="entries"></div>
-			</div>
-    	</div>
-	</div>	
-  </body>
+    <script data-main="FLP/main" src="FLP/require-jquery.js"></script>
+    <link href="default.css" rel="stylesheet">
+</head>
+<body>
+<div id="container"></div>
+</body>	
 </html>

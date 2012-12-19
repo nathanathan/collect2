@@ -25,5 +25,12 @@ require([
     'backboneqp'
 	], 
 	function(_, Backbone, app){
-        whenDeviceReady(app.init);
+        /*
+        No need to worry about timing:
+        This event behaves differently from others in that any event handler registered after the event has been fired will have its callback function called immediately.
+        */
+        document.addEventListener("deviceready", function onDeviceReady() {
+            window.testVar = !('requestFileSystem' in window);
+            app.init();
+        });
 });

@@ -9,7 +9,7 @@ function($, Backbone, _, dirListView){
 
     function getDirList(dirPath, callback) {
         if(!('requestFileSystem' in window)) {
-            alert('Cannot request file system');
+            alert('Cannot call requestFileSystem');
             var fakeEntries = [{
                 isFile: true,
                 isDirectory: false,

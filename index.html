@@ -2,40 +2,40 @@
 <html>
 <head>
     <title>Chooser</title>
-<script type="text/javascript" charset="utf-8">
-var deviceIsReady;
-if(window.device && window.device.cordova) {
-    deviceIsReady = false;
-} else {
-    deviceIsReady = true;
-}
-// Call onDeviceReady when Cordova is loaded.
-//
-// At this point, the document has loaded but cordova-2.2.0.js has not.
-// When Cordova is loaded and talking with the native device,
-// it will call the event `deviceready`.
-//
-function onLoad() {
-    document.addEventListener("deviceready", onDeviceReady, false);
-}
-// Cordova is loaded and it is now safe to make calls Cordova methods
-function onDeviceReady() {
-    deviceIsReady = true;
-    // Now safe to use the Cordova API
-}
-function whenDeviceReady(callback){
-    if(deviceIsReady) {
-        callback();
+    <script type="text/javascript" charset="utf-8">
+    if(window.device && window.device.cordova) {
+        window.deviceIsReady = false;
+        console.log("deviceIsReady = false");
     } else {
-        document.addEventListener("deviceready", callback, false);
+        window.deviceIsReady = true;
     }
-}
-</script>
+    // Call onDeviceReady when Cordova is loaded.
+    //
+    // At this point, the document has loaded but cordova-2.2.0.js has not.
+    // When Cordova is loaded and talking with the native device,
+    // it will call the event `deviceready`.
+    //
+    function onLoad() {
+        document.addEventListener("deviceready", function onDeviceReady() {
+            window.deviceIsReady = true;
+            // Now safe to use the Cordova API
+        }, false);
+    }
+    
+    function whenDeviceReady(callback){
+        if(deviceIsReady) {
+            callback();
+        } else {
+            console.log("waiting for ready.");
+            document.addEventListener("deviceready", callback, false);
+        }
+    }
+    </script>
     <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
     <script data-main="FLP/main" src="FLP/require-jquery.js"></script>
     <link href="default.css" rel="stylesheet">
 </head>
 <body onload="onLoad()">
-<div id="container"></div>
+    <div id="container"></div>
 </body>	
 </html>

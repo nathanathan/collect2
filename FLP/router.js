@@ -16,10 +16,10 @@ function($, Backbone, _, dirListView){
                 name: "fakeFile.js",
                 fullPath: dirPath + "fakeFile.js"
             }, {
-                isFile: true,
-                isDirectory: false,
-                name: "fakeFile2.js",
-                fullPath: dirPath + "fakeFile.js"
+                isFile: false,
+                isDirectory: true,
+                name: "fakeDir",
+                fullPath: dirPath + "fakeDir"
             }];
             callback(fakeEntries);
             return;

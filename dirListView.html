@@ -1,5 +1,11 @@
 <ul class="navlist">
-<% _.each(entries, function(entry){ %>
-    <li><a href="survey/index.html#formDef=<% print(encodeURIComponent(entry.fullPath)) %>"><%- entry.name %></a></li>
-<% }); %>
+<%
+_.each(entries, function(entry){ 
+    if(entry.isDirectory) {
+%>
+    <li><a href="survey/index.html#formPath=<%- entry.fullPath %>"><%- entry.name %></a></li>
+<%
+    }
+});
+%>
 </ul>

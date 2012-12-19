@@ -10,16 +10,29 @@ function($, Backbone, _, dirListView){
     function getDirList(dirPath, callback) {
         if(!('requestFileSystem' in window)) {
             alert('Cannot call requestFileSystem');
+            var fakeMetaDataFunction = function(){
+                return {
+                    modificationTime: new Date()
+                };
+            };
             var fakeEntries = [{
                 isFile: true,
                 isDirectory: false,
                 name: "fakeFile.js",
-                fullPath: dirPath + "fakeFile.js"
+                fullPath: dirPath + "fakeFile.js",
+                getMetadata: fakeMetaDataFunction
             }, {
                 isFile: false,
                 isDirectory: true,
                 name: "fakeDir",
-                fullPath: dirPath + "fakeDir"
+                fullPath: dirPath + "fakeDir",
+                getMetadata: fakeMetaDataFunction
+            }, {
+                isFile: false,
+                isDirectory: true,
+                name: "fakeDir2",
+                fullPath: dirPath + "fakeDir2",
+                getMetadata: fakeMetaDataFunction
             }];
             callback(fakeEntries);
             return;

@@ -1,9 +1,16 @@
+<h1>Choose a form:</h1>
 <ul class="navlist">
 <%
 _.each(entries, function(entry){ 
     if(entry.isDirectory) {
 %>
-    <li><a href="survey/index.html#formPath=<%- entry.fullPath %>"><%- entry.name %></a></li>
+    <li>
+    <a href="survey/index.html#formPath=<%- entry.fullPath %>/">
+        <h3><%- entry.name %></h3>
+        <p>Last Modified:</p>
+        <p><%- entry.getMetadata().modificationTime %></p>
+    </a>
+    </li>
 <%
     }
 });

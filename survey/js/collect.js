@@ -5,7 +5,7 @@ It will be replaced by one provided by Android.
 window.collect = window.collect || {
     instanceId: null,
     getBaseUrl: function() {
-        return '../default';
+        return '../survey';
     },
     getPlatformInfo: function() {
         // container identifies the WebKit or browser context.

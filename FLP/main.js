@@ -25,5 +25,5 @@ require([
     'backboneqp'
 	], 
 	function(_, Backbone, app){
-		app.init();
+        whenDeviceReady(app.init);
 });

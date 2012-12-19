@@ -10,10 +10,10 @@ function($, Backbone, _, dirListView){
     function getDirList(dirPath, callback) {
         if(!('requestFileSystem' in window)) {
             alert('Cannot call requestFileSystem');
-            var fakeMetaDataFunction = function(){
-                return {
+            var fakeMetaDataFunction = function(success, fail){
+                success({
                     modificationTime: new Date()
-                };
+                });
             };
             var fakeEntries = [{
                 isFile: true,
@@ -48,7 +48,17 @@ function($, Backbone, _, dirListView){
                 var directoryReader = dirEntry.createReader();
                 // Get a list of all the entries in the directory
                 directoryReader.readEntries(function(entries) {
-                    callback(entries);
+                    var afterMetadataAttached = _.after(entries.length, function() {
+                        callback(entries);
+                    });
+                    _.each(entries, function(entry){
+                        entry.getMetadata(function success(metaData){
+                            entry._modificationTime = metaData.modificationTime;
+                            afterMetadataAttached();
+                        }, function fail(err){
+                            alert("Could not get metadata");
+                        });
+                    });
                 }, function(error) {
                     alert("Failed to list directory contents: " + error.code);
                 });

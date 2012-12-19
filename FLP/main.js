@@ -24,7 +24,7 @@ require([
     'app',
     'backboneqp'
 	], 
-	function(_, Backbone, app){
+	function(_, Backbone, app) {
         //Attempt to detect if this is a cordova app.
         //There are many ways to do it. This one will have problems
         //If the cordova.js script is added to the project.
@@ -40,5 +40,4 @@ require([
         } else {
             app.init();
         }
-
 });

@@ -1,5 +1,10 @@
 body {
     background-color: moccasin;
+    font-family:Helvetica,sans-serif;
+}
+h1 {
+    position: fixed;
+    z-index: -1;
 }
 .navlist {
     list-style: none;
@@ -20,4 +25,13 @@ body {
     color: black;
     text-decoration: none;
     padding: 12px;
+}
+.menu-item {
+    float:right;
+    margin: 6px;
+    background-color: white;
+    color: black;
+    text-decoration: none;
+    padding: 12px;
+    cursor: pointer;
 }

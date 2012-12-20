@@ -1,4 +1,10 @@
 <h1>Choose a form:</h1>
+
+<a class="menu-item sort-name">Sort | Name</a>
+<a class="menu-item sort-date">Sort | Date</a>
+<a class="menu-item refresh">Refresh</a>
+<div style="clear:both;"></div>
+
 <ul class="navlist">
 <%
 _.each(entries, function(entry){ 
@@ -6,9 +12,11 @@ _.each(entries, function(entry){
 %>
     <li>
     <a href="survey/index.html#formPath=<%- entry.fullPath %>/">
-        <h3><%- entry.name %></h3>
-        <p>Last Modified:</p>
-        <p><%- entry._modificationTime %></p>
+        <h2><%- entry.name %></h2>
+        <p>
+            <strong>Last Modified:</strong><br />
+            <%- entry._modificationTime %>
+        </p>
     </a>
     </li>
 <%

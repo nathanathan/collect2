@@ -90,7 +90,7 @@ function($, Backbone, _, dirListView){
             console.log('sortName');
             console.log(e);
             this.orderVar = -this.orderVar;
-            this.collection.comparator = this.genComparator(function(entry){
+            this.collection.comparator = this.genComparator(function(entry) {
                 return entry.get("_modificationTime");
             }, this.orderVar);
             this.collection.sort();
@@ -101,7 +101,7 @@ function($, Backbone, _, dirListView){
             console.log('sortTime');
             console.log(e);
             this.orderVar = -this.orderVar;
-            this.collection.comparator = this.genComparator(function(entry){
+            this.collection.comparator = this.genComparator(function(entry) {
                 return entry.get("name");
             }, this.orderVar);
             this.collection.sort();
@@ -161,9 +161,9 @@ function($, Backbone, _, dirListView){
             if(!params){
                 params = {};
             }
-            _.extend(params, {
+            params = _.extend({
                 "dirPath" : "odk/js/forms/"
-            });
+            }, params);
             
             var myDirView = new DirView({
                 collection: new Backbone.Collection(),

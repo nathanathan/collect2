@@ -6,6 +6,8 @@ define([
 function($, Backbone, _, dirListView){
     
     function getDirList(dirPath, callback) {
+        console.log("getDirList");
+        console.log(dirPath);
         if(!('requestFileSystem' in window)) {
             alert('Cannot call requestFileSystem');
             var fakeMetaDataFunction = function(success, fail){
@@ -114,7 +116,7 @@ function($, Backbone, _, dirListView){
             var that = this;
             getDirList(that.dirPath, function(entries){
                 var afterMetadataAttached = _.after(entries.length, function() {
-                    that.collection.reset(entries);
+                    that.collection['reset'](entries);
                     that.render();
                 });
                 //Go through all the entries and asynchronously get their metadatas.

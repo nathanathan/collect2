@@ -3,16 +3,17 @@
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "com.phonegap.example"
         versionCode="10" 
-        version   = "1.1.1">
+        version   = "1.1.3">
 
     <!-- versionCode is optional and Android only -->
 
-    <name>Collect 2</name>
+    <name>ODK Survey</name>
 
     <description></description>
 
     <author>
         opendatakit
     </author>
-
+    
+    <icon src="clipboard.png" />
 </widget>

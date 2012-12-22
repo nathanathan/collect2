@@ -88,7 +88,7 @@ function($, Backbone, _, dirListView){
                 if(A == B) return 0;
             };
         },
-        sortName: function(e){
+        sortName: function(e) {
             console.log('sortName');
             console.log(e);
             this.orderVar = -this.orderVar;
@@ -99,7 +99,7 @@ function($, Backbone, _, dirListView){
             this.render();
             return this;
         },
-        sortDate: function(e){
+        sortDate: function(e) {
             console.log('sortTime');
             console.log(e);
             this.orderVar = -this.orderVar;
@@ -110,16 +110,19 @@ function($, Backbone, _, dirListView){
             this.render();
             return this;
         },
-        refresh: function(e){
+        refresh: function(e) {
             console.log('refresh');
             console.log(e);
             var that = this;
-            getDirList(that.dirPath, function(entries){
+            getDirList(that.dirPath, function(entries) {
+                console.log('got entries');
                 var afterMetadataAttached = _.after(entries.length, function() {
+                    console.log('resetting entries');
                     that.collection['reset'](entries);
                     that.render();
                 });
                 //Go through all the entries and asynchronously get their metadatas.
+                console.log('attaching metadata');
                 _.each(entries, function(entry){
                     entry.getMetadata(function success(metaData){
                         entry._modificationTime = metaData.modificationTime;
@@ -155,6 +158,7 @@ function($, Backbone, _, dirListView){
 			':page': 'listFiles'
 		},
         start: function(){
+            console.log('start');
             this.navigate('listFiles', {trigger: true, replace: true});
         },
 		listFiles: function(page, params){
@@ -171,7 +175,7 @@ function($, Backbone, _, dirListView){
                 collection: new Backbone.Collection(),
                 dirPath: params.dirPath
             });
-            $('#container').append(myDirView.render().el);
+            myDirView.setElement(document.getElementById("container"));
             myDirView.refresh();
 		}
 	});

@@ -114,8 +114,9 @@ function($, Backbone, _, dirListView){
             console.log('refresh');
             console.log(e);
             var that = this;
-            getDirList(that.dirPath, function(entries) {
+            getDirList(that.options.dirPath, function(entries) {
                 console.log('got entries');
+                console.log(entries);
                 var afterMetadataAttached = _.after(entries.length, function() {
                     console.log('resetting entries');
                     that.collection['reset'](entries);

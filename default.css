@@ -37,3 +37,96 @@ h1 {
     -webkit-box-shadow: -1px 1px 1px 1px rgba(0, 0, 0, .5);
     box-shadow: -1px 1px 1px 1px rgba(0, 0, 0, .5);
 }
+
+h2 {
+    text-align: center;
+}
+.board {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    height: 600px;
+    width: 400px;
+    background-color: orange;
+    -webkit-box-shadow: -2px 2px 1px 1px rgba(0, 0, 0, .4);
+    box-shadow: -2px 2px 1px 1px rgba(0, 0, 0, .4);
+    
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    
+-moz-transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
+-webkit-transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
+-o-transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
+-ms-transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
+transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
+}
+.clip {
+    margin-left: auto;
+    margin-right: auto;
+    position:relative;
+    top: -2px;
+    height: 50px;
+    width: 120px;
+    background-color: silver;
+    z-index: 2;
+    -webkit-box-shadow: -2px 2px 1px 1px rgba(0, 0, 0, .4);
+    box-shadow: -2px 2px 1px 1px rgba(0, 0, 0, .4);
+    
+    background-image: linear-gradient(bottom, rgb(156,156,156) 25%, rgb(232,232,232) 63%);
+    background-image: -o-linear-gradient(bottom, rgb(156,156,156) 25%, rgb(232,232,232) 63%);
+    background-image: -moz-linear-gradient(bottom, rgb(156,156,156) 25%, rgb(232,232,232) 63%);
+    background-image: -webkit-linear-gradient(bottom, rgb(156,156,156) 25%, rgb(232,232,232) 63%);
+    background-image: -ms-linear-gradient(bottom, rgb(156,156,156) 25%, rgb(232,232,232) 63%);
+    
+    background-image: -webkit-gradient(
+        linear,
+    	left bottom,
+    	left top,
+    	color-stop(0.25, rgb(156,156,156)),
+    	color-stop(0.63, rgb(232,232,232))
+    );
+}
+.page {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 30px;
+    position: relative;
+    top: -20px;
+    width: 320px;
+    height: 500px;
+    background-color: whitesmoke;
+    
+    -webkit-box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, .2);
+    box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, .2);
+}
+.page-list {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+}
+.page-list > li {
+    margin: 6px;
+}
+.page-list > li:hover {
+    background-color: papayawhip;
+}
+.page-list > li a:before {
+    padding-right: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    content: "";
+	background-image: url(checkbox.png);
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+}
+.page-list > li a:hover:before {
+    background-image: url(checkbox_checked.png);
+}
+
+.page-list > li a {
+    display: block;
+    color: black;
+    text-decoration: underline;
+    padding: 12px;
+}

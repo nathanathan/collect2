@@ -2,9 +2,10 @@ define([
 	'jquery', 
 	'backbone', 
 	'underscore',
-    'text!../dirListView.html'], 
-function($, Backbone, _, dirListView){
-    
+    'text!main.html',
+    'text!dirListView.html'], 
+function($, Backbone, _, mainTemplateHtml, dirListView){
+    var mainTemplate = _.template(mainTemplateHtml);
     function getDirList(dirPath, callback) {
         console.log("getDirList");
         console.log(dirPath);
@@ -12,7 +13,7 @@ function($, Backbone, _, dirListView){
             alert('Cannot call requestFileSystem');
             var fakeMetaDataFunction = function(success, fail){
                 success({
-                    modificationTime: new Date()
+                    modificationTime: new Date(Math.random()*2000000000000)
                 });
             };
             var fakeEntries = [{
@@ -93,7 +94,7 @@ function($, Backbone, _, dirListView){
             console.log(e);
             this.orderVar = -this.orderVar;
             this.collection.comparator = this.genComparator(function(entry) {
-                return entry.get("_modificationTime");
+                return entry.get("name");
             }, this.orderVar);
             this.collection.sort();
             this.render();
@@ -104,7 +105,7 @@ function($, Backbone, _, dirListView){
             console.log(e);
             this.orderVar = -this.orderVar;
             this.collection.comparator = this.genComparator(function(entry) {
-                return entry.get("name");
+                return entry.get("_modificationTime");
             }, this.orderVar);
             this.collection.sort();
             this.render();
@@ -138,7 +139,6 @@ function($, Backbone, _, dirListView){
         }
     });
     
-    
     //indexRelPathPrefix computed so the location of the boilerplate directory can change
     //only requiring modification of index.html
     //I haven't tested it though.
@@ -155,12 +155,13 @@ function($, Backbone, _, dirListView){
             //TODO: Loading message?
 		},
 		routes: {
-            '': 'listFiles',
-			':page': 'listFiles'
+            '': 'main',
+			'listFiles': 'listFiles'
 		},
-        start: function(){
-            console.log('start');
-            this.navigate('listFiles', {trigger: true, replace: true});
+        main: function(params){
+            console.log('main');
+            $("#container").html(mainTemplate());
+            //this.navigate('listFiles', {trigger: true, replace: true});
         },
 		listFiles: function(page, params){
             console.log('params:');

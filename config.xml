@@ -16,4 +16,6 @@
     </author>
     
     <icon src="clipboard.png" />
+    
+    <gap:plugin name="BarcodeScanner" /> <!-- latest release -->
 </widget>

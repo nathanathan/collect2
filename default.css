@@ -54,12 +54,6 @@ h2 {
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
-    
--moz-transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
--webkit-transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
--o-transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
--ms-transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
-transform: scale(1) rotate(0deg) translateX(0px) translateY(0px) skewX(-1deg) skewY(2deg);
 }
 .clip {
     margin-left: auto;

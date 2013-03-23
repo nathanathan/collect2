@@ -2,71 +2,18 @@ define([
 	'jquery', 
 	'backbone', 
 	'underscore',
+    'sfsf',
     'text!main.html',
     'text!dirListView.html'], 
-function($, Backbone, _, mainTemplateHtml, dirListView){
+function($, Backbone, _, sfsf, mainTemplateHtml, dirListView){
     var mainTemplate = _.template(mainTemplateHtml);
-    function getDirList(dirPath, callback) {
-        console.log("getDirList");
-        console.log(dirPath);
-        if(!('requestFileSystem' in window)) {
-            alert('Cannot call requestFileSystem');
-            var fakeMetaDataFunction = function(success, fail){
-                success({
-                    modificationTime: new Date(Math.random()*2000000000000)
-                });
-            };
-            var fakeEntries = [{
-                isFile: true,
-                isDirectory: false,
-                name: "fakeFile.js",
-                fullPath: dirPath + "fakeFile.js",
-                getMetadata: fakeMetaDataFunction
-            }, {
-                isFile: false,
-                isDirectory: true,
-                name: "fakeDir",
-                fullPath: dirPath + "fakeDir",
-                getMetadata: fakeMetaDataFunction
-            }, {
-                isFile: false,
-                isDirectory: true,
-                name: "fakeDir2",
-                fullPath: dirPath + "fakeDir2",
-                getMetadata: fakeMetaDataFunction
-            }];
-            callback(fakeEntries);
-            return;
-        }
-        window.requestFileSystem(window.LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
-            console.log(fileSystem.name);
-            console.log(fileSystem.root.name);
-            $('#file-system-text').html("File System: <strong>" + fileSystem.name + "</strong> " + "Root: <strong>" + fileSystem.root.name + "</strong>");
-            fileSystem.root.getDirectory(dirPath, {
-                create: true,
-                exclusive: false
-            }, function(dirEntry) {
-                var directoryReader = dirEntry.createReader();
-                // Get a list of all the entries in the directory
-                directoryReader.readEntries(function(entries) {
-                    callback(entries);
-                }, function(error) {
-                    alert("Failed to list directory contents: " + error.code);
-                });
-            }, function(error) {
-                alert("Unable to create new directory: " + error.code);
-            });
-        }, function failFS(evt) {
-            console.log(evt);
-            alert("File System Error: " + evt.target.error.code);
-        });
-    }
-    
+
     var DirView = Backbone.View.extend({
         template: _.template(dirListView),
         orderVar: 1,
         render: function() {
             console.log('render');
+            console.log(this.collection.toJSON());
             this.$el.html(this.template({
                 entries : this.collection.toJSON()
             }));
@@ -115,26 +62,27 @@ function($, Backbone, _, mainTemplateHtml, dirListView){
             console.log('refresh');
             console.log(e);
             var that = this;
-            getDirList(that.options.dirPath, function(entries) {
-                console.log('got entries');
-                console.log(entries);
-                var afterMetadataAttached = _.after(entries.length, function() {
+            
+            sfsf.cretrieve(that.options.dirPath, function(error, dirEntry) {
+                if(error){
+                    console.log(error);
+                    alert("File System Error: " + error.target.error.code);
+                    return;
+                }
+                sfsf.readEntriesWithMetadata(dirEntry, function (error, entries){
+                    if(error){
+                        console.log(error);
+                        alert("Could not get metadata");
+                        return;
+                    }
                     console.log('resetting entries');
-                    that.collection['reset'](entries);
+                    console.log(entries);
+                    //The map function is used to convert the EntryList object into a normal array.
+                    that.collection['reset'](_.map(entries, function(entry){ return entry; }));
                     that.render();
                 });
-                //Go through all the entries and asynchronously get their metadatas.
-                console.log('attaching metadata');
-                _.each(entries, function(entry){
-                    entry.getMetadata(function success(metaData){
-                        entry._modificationTime = metaData.modificationTime;
-                        console.log(entry._modificationTime);
-                        afterMetadataAttached();
-                    }, function fail(err){
-                        alert("Could not get metadata");
-                    });
-                });
             });
+            
             return this;
         }
     });
@@ -166,11 +114,11 @@ function($, Backbone, _, mainTemplateHtml, dirListView){
 		listFiles: function(page, params){
             console.log('params:');
             console.log(params);
-            if(!params){
+            if(!params) {
                 params = {};
             }
             params = _.extend({
-                "dirPath" : "odk/js/forms/"
+                "dirPath" : ""
             }, params);
             
             var myDirView = new DirView({

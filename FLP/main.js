@@ -3,7 +3,8 @@ require.config({
     'paths': { 
 		"underscore": "libs/underscore-min", 
 		"backbone": "libs/backbone-min",
-        "backboneqp": "libs/backbone.queryparams"
+        "backboneqp": "libs/backbone.queryparams",
+        "sfsf": "libs/sfsf/sfsf"
 	},
 	'shim': 
 	{

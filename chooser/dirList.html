@@ -1,0 +1,74 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <a class="brand"  style="margin-left:auto;">ODK Survey</a>
+    </div>
+</div>
+<div class="nav-spacer"></div>
+<div class="container">
+    <% if(status.error){ %>
+    <div class="alert alert-error">
+        <strong>Error: </strong><%- status.error %>
+    </div>
+    <% } %>
+    <% if(status.installing){ %>
+        <div class="alert alert-info">
+            <p>Installing example interview...</p>
+        </div>
+    <% } %>
+    <% if(status.interviewsToFetch > 0){ %>
+        <div class="alert alert-info">
+            <p>Fetching interviews... (<%- status.interviewsToFetch %> remaining)</p>
+        </div>
+    <% } %>
+
+    <span class="label">Sort By:</span>
+    <div class="btn-group">
+        <button class="btn sort-name">Name</button>
+        <button class="btn sort-date">Date</button>
+    </div>
+    <button class="btn refresh" style="float:right;">Refresh</button>
+    <div style="clear:both;height:5px;"></div>
+    <% if(interviews.length === 0){ %>
+        <p>No entries found</p>
+        <a class="install-example btn">Install example interview</a>
+    <% } %>
+
+    <ul class="navlist">
+    <%
+    _.each(interviews, function(interview){ 
+    %>
+    <li>
+        <h2><%- interview.name %></h2>
+        <p>
+            <strong>Last Modified:</strong><br />
+            <%- interview.modificationTime %>
+        </p>
+        <% if(!interview.converting && !interview.error){ %>
+        <a class="btn" href="default/index.html#formPath=<%- window.encodeURIComponent(interview.fullPath) %>/">
+            Open
+        </a>
+        <% } %>
+        <% if(interview.converting){ %>
+            <div class="alert alert-info">
+                <p>Converting xlsx...</p>
+            </div>
+        <% } %>
+        <% if(interview.error){ %>
+            <div class="alert alert-error">
+                <p><%- interview.error %></p>
+            </div>
+        <% } %>
+    </li>
+    <%
+    });
+    %>
+    </ul>
+
+    <% if(!("cordova" in window)){ %>
+        <center>
+        <a href="chooser/libs/filerjs/demos/filer.html" class="btn">
+            Add Interview
+        </a>
+        </center>
+    <% } %>
+</div>

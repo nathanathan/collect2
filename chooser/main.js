@@ -196,10 +196,13 @@ function(config, _, Backbone, dirListView, sfsf){
                                 //TODO: Check name?
                                 return entry.name.slice(-4) === "xlsx";
                             });
+                            var entryURL = ('toURL' in entry) ? entry.toURL() : entry.fullPath;
+                            console.log(entry.fullPath);
                             var entryModel = new Backbone.Model({
                                 name: entry.name,
                                 modificationTime: entry.metadata.modificationTime,
-                                fullPath: ('toURL' in entry) ? entry.toURL() : entry.fullPath
+                                //Fix iOS Paths
+                                fullPath: entryURL.replace("file://localhost/", "file:///")
                             });
                             if(!jsonEntry && !xlsxEntry){
                                 entryModel.set("error", "No json or xlsx files for interview");

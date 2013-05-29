@@ -1297,6 +1297,7 @@ promptTypes.barcode = promptTypes.launch_intent.extend({
         return jsonObject.result.SCAN_RESULT;
     },
     launch: function(evt) {
+        var that = this;
         console.log('scanning...');
         var ctxt = controller.newContext(evt);
         try {

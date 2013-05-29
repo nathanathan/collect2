@@ -12,12 +12,12 @@
     <% } %>
     <% if(status.installing){ %>
         <div class="alert alert-info">
-            <p>Installing example interview...</p>
+            <p>Installing example survey...</p>
         </div>
     <% } %>
-    <% if(status.interviewsToFetch > 0){ %>
+    <% if(status.surveysToFetch > 0){ %>
         <div class="alert alert-info">
-            <p>Fetching interviews... (<%- status.interviewsToFetch %> remaining)</p>
+            <p>Fetching surveys... (<%- status.surveysToFetch %> remaining)</p>
         </div>
     <% } %>
 
@@ -28,34 +28,34 @@
     </div>
     <button class="btn refresh" style="float:right;">Refresh</button>
     <div style="clear:both;height:5px;"></div>
-    <% if(interviews.length === 0){ %>
+    <% if(surveys.length === 0){ %>
         <p>No entries found</p>
-        <a class="install-example btn">Install example interview</a>
+        <a class="install-example btn">Install example survey</a>
     <% } %>
 
     <ul class="navlist">
     <%
-    _.each(interviews, function(interview){ 
+    _.each(surveys, function(survey){ 
     %>
     <li>
-        <h2><%- interview.name %></h2>
+        <h2><%- survey.name %></h2>
         <p>
             <strong>Last Modified:</strong><br />
-            <%- interview.modificationTime %>
+            <%- survey.modificationTime %>
         </p>
-        <% if(!interview.converting && !interview.error){ %>
-        <a class="btn" href="default/index.html#formPath=<%- window.encodeURIComponent(interview.fullPath) %>/">
+        <% if(!survey.converting && !survey.error){ %>
+        <a class="btn" href="default/index.html#formPath=<%- window.encodeURIComponent(survey.fullPath) %>/">
             Open
         </a>
         <% } %>
-        <% if(interview.converting){ %>
+        <% if(survey.converting){ %>
             <div class="alert alert-info">
                 <p>Converting xlsx...</p>
             </div>
         <% } %>
-        <% if(interview.error){ %>
+        <% if(survey.error){ %>
             <div class="alert alert-error">
-                <p><%- interview.error %></p>
+                <p><%- survey.error %></p>
             </div>
         <% } %>
     </li>
@@ -67,7 +67,7 @@
     <% if(!("cordova" in window)){ %>
         <center>
         <a href="chooser/libs/filerjs/demos/filer.html" class="btn">
-            Add Interview
+            Add survey
         </a>
         </center>
     <% } %>

@@ -1,5 +1,4 @@
 //Remove bootstrap
-//Rename interview with item
 require.config({ 
     'paths': { 
 		"underscore": "libs/underscore-min", 
@@ -34,7 +33,7 @@ require([
 ], 
 function(config, _, Backbone, dirListView, sfsf){
     
-    var InterviewListView = Backbone.View.extend({
+    var surveyListView = Backbone.View.extend({
         template: _.template(dirListView),
         orderVar: 1,
         render: _.debounce(function() {
@@ -42,7 +41,7 @@ function(config, _, Backbone, dirListView, sfsf){
             console.log(this.collection.toJSON());
             this.$el.html(this.template({
                 status : this.options.status.toJSON(),
-                interviews : this.collection.toJSON()
+                surveys : this.collection.toJSON()
             }));
             return this;
         }, 200),
@@ -106,7 +105,7 @@ function(config, _, Backbone, dirListView, sfsf){
                     if (file.slice(-3) === 'png') {
                         type = 'image/png';
                     }
-                    sfsf.cretrieve(sfsf.joinPaths(config.appDir, 'interviews', file), {
+                    sfsf.cretrieve(sfsf.joinPaths(config.appDir, 'surveys', file), {
                         data: fileContent,
                         type: type
                     }, function(err){
@@ -164,12 +163,12 @@ function(config, _, Backbone, dirListView, sfsf){
             });
         });
     };
-    var InterviewDefs = Backbone.Collection.extend({
+    var surveyDefs = Backbone.Collection.extend({
         fetchFromFS: function(){
             //There is a potential bug here if this function gets called again
             //before the previous fetch finishes.
             var that = this;
-            sfsf.cretrieve(sfsf.joinPaths(config.appDir, 'interviews'), function(error, dirEntry) {
+            sfsf.cretrieve(sfsf.joinPaths(config.appDir, 'surveys'), function(error, dirEntry) {
                 if(error){
                     that.trigger("error", error);
                     return;
@@ -187,7 +186,7 @@ function(config, _, Backbone, dirListView, sfsf){
                     _.each(entries, function(entry){
 
                         sfsf.readEntriesWithMetadata(entry, function (error, entries){
-                            that.trigger("error", "No json or xlsx interview");
+                            that.trigger("error", "No json or xlsx survey");
                             //The map function is used to convert the EntryList object into a normal array.
                             var jsonEntry = _.find(entries, function(entry) {
                                 return entry.name === "formDef.json";
@@ -205,14 +204,14 @@ function(config, _, Backbone, dirListView, sfsf){
                                 fullPath: entryURL.replace("file://localhost/", "file:///")
                             });
                             if(!jsonEntry && !xlsxEntry){
-                                entryModel.set("error", "No json or xlsx files for interview");
+                                entryModel.set("error", "No json or xlsx files for survey");
                             }
                             if(xlsxEntry) {
                                 var xlsxModTime = xlsxEntry.metadata.modificationTime;
                                 var jsonModTime = jsonEntry ? jsonEntry.metadata.modificationTime : new Date(0);
                                 if(xlsxModTime > jsonModTime) {
                                     entryModel.set("converting", true);
-                                    generateJSON(xlsxEntry.fullPath, sfsf.joinPaths(entry.fullPath, "interview.json"),
+                                    generateJSON(xlsxEntry.fullPath, sfsf.joinPaths(entry.fullPath, "survey.json"),
                                     function(err) {
                                         if(err) {
                                             entryModel.set("error", String(err));
@@ -247,32 +246,32 @@ function(config, _, Backbone, dirListView, sfsf){
             });
             
             var status = new Backbone.Model({
-                interviewsToFetch: 0,
+                surveysToFetch: 0,
                 error: null,
                 installing: false,
                 converting: ""
             });
-            var myInterviewDefs = new InterviewDefs();
-            myInterviewDefs.on("fetchUpdate", function(remainingEntries){
-                status.set("interviewsToFetch", remainingEntries);
+            var mysurveyDefs = new surveyDefs();
+            mysurveyDefs.on("fetchUpdate", function(remainingEntries){
+                status.set("surveysToFetch", remainingEntries);
                 if(remainingEntries === 0){
                     status.set("converting", "");
                 }
             });
-            myInterviewDefs.on("fetchError", function(error){
+            mysurveyDefs.on("fetchError", function(error){
                 status.set("error", error);
             });
             
-            var myInterviewList = new InterviewListView({
-                collection: myInterviewDefs,
+            var mysurveyList = new surveyListView({
+                collection: mysurveyDefs,
                 el: $(".container").get(0),
                 status: status
             });
-            myInterviewList.render();
+            mysurveyList.render();
 
-            myInterviewDefs.on('all', _.debounce(myInterviewList.render, 100), myInterviewList);
-            status.on('change', _.debounce(myInterviewList.render, 100), myInterviewList);
-            myInterviewList.refresh();
+            mysurveyDefs.on('all', _.debounce(mysurveyList.render, 100), mysurveyList);
+            status.on('change', _.debounce(mysurveyList.render, 100), mysurveyList);
+            mysurveyList.refresh();
         });
     };
     //This works for android but it might not work everywhere:

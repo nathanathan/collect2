@@ -1290,12 +1290,32 @@ promptTypes.launch_intent = promptTypes.base.extend({
         return jsonObject.result;
     }
 });
-/* Save only the SCAN_RESULT */
 promptTypes.barcode = promptTypes.launch_intent.extend({
     type: "barcode",
     intentString: 'com.google.zxing.client.android.SCAN',
      extractDataValue: function(jsonObject) {
         return jsonObject.result.SCAN_RESULT;
+    },
+    launch: function(evt) {
+        console.log('scanning...');
+        var ctxt = controller.newContext(evt);
+        try {
+            window.plugins.barcodeScanner.scan(function(args) {
+                console.log("Scanner result: \n" +
+                    "text: " + args.text + "\n" +
+                    "format: " + args.format + "\n" +
+                    "cancelled: " + args.cancelled + "\n");
+                that.setValue($.extend({}, ctxt, {
+                    success: function() {
+                        that.renderContext.value = that.getValue();
+                        that.render();
+                        ctxt.success();
+                    }
+                }), args.text);
+            });
+        } catch (ex) {
+            alert(ex.message);
+        }
     }
 });
 promptTypes.geopoint = promptTypes.launch_intent.extend({

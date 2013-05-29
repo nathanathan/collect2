@@ -6,7 +6,8 @@
         version   = "1.1.8">
 
     <!-- versionCode is optional and Android only -->
-
+    <preference name="phonegap-version" value="2.7.0" />
+    
     <name>ODK Survey</name>
 
     <description></description>
